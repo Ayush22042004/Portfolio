@@ -2,7 +2,7 @@
 
 A dark, Stranger Things–inspired portfolio to showcase projects, skills, and contact details. This is a static site built with plain HTML, CSS and vanilla JavaScript.
 
-[Live demo](https://ayushsingh22.netlify.app/)
+[Live demo](https://ayushsingh22.me/)
 
 ---
 
