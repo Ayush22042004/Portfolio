@@ -8,14 +8,23 @@
     <meta name="description" content="Welcome to the Upside Down. Ayush Singh - Developer of Impossible Things">
     <meta name="keywords" content="Stranger Things, Developer, Portfolio, Web Developer, Supernatural">
     <meta name="author" content="Ayush Singh">
+    <!-- Open Graph / Social sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Ayush Singh - Full Stack Developer">
+    <meta property="og:description" content="Portfolio of Ayush Singh — Full Stack Developer specializing in React, Node.js & MongoDB.">
+    <meta property="og:image" content="images/profile.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ayush Singh - Full Stack Developer">
+    <meta name="twitter:description" content="Portfolio of Ayush Singh — Full Stack Developer specializing in React, Node.js & MongoDB.">
+    <meta name="twitter:image" content="images/profile.jpg">
     <title>AYUSH SINGH - THE UPSIDE DOWN DEVELOPER</title>
-    <!-- preconnect & preload for fonts (reduce render-blocking) -->
+    <link rel="icon" type="image/jpeg" href="images/profile.jpg">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <!-- preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap">
-
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- preload hero image for faster LCP -->
     <link rel="preload" as="image" href="images/profile.jpg">
@@ -73,7 +82,7 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <a href="#home"><span class="logo-icon">A</span><span class="logo-typewriter"></span></a>
+                <a href="#home"><img class="logo-icon logo-image" src="images/favicon.ico" alt="Ayush logo"><span class="logo-typewriter"></span></a>
             </div>
             <ul class="nav-menu" id="nav-menu">
                 <li class="nav-item">
@@ -92,18 +101,20 @@
                     <a href="#contact" class="nav-link">Contact</a>
                 </li>
             </ul>
-            <div class="nav-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+            <div class="nav-actions">
+                <div class="nav-toggle" id="mobile-menu" role="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+                <button id="theme-toggle" class="theme-toggle" title="Switch Theme" aria-label="Switch between Upside Down and Real World theme">
+                    <span class="theme-icon">🌀</span>
+                </button>
+                <!-- music control button shares styling with the theme toggle but has its own class -->
+                <button id="music-toggle" class="music-toggle" title="Toggle Background Music" aria-label="Toggle background music">
+                    <i class="fas fa-volume-up"></i>
+                </button>
             </div>
-            <button id="theme-toggle" class="theme-toggle" title="Switch Theme">
-                <span class="theme-icon">🌀</span>
-            </button>
-            <!-- music control button shares styling with the theme toggle but has its own class -->
-            <button id="music-toggle" class="music-toggle" title="Toggle Background Music">
-                <i class="fas fa-volume-up"></i>
-            </button>
         </div>
     </nav>
 
@@ -122,7 +133,8 @@
                 </p>
                 <div class="hero-buttons">
                     <a href="#projects" class="btn btn-primary">EXPLORE MY WORK</a>
-                    <a href="https://github.com/Ayush22042004" class="btn btn-secondary" target="_blank">GITHUB PORTAL</a>
+                    <a href="https://github.com/Ayush22042004" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">GITHUB PORTAL</a>
+                    <!-- <a href="images/resume.pdf" class="btn btn-secondary" download>DOWNLOAD RESUME</a> -->
                 </div>
             </div>
             <div class="hero-image">
@@ -319,11 +331,11 @@
             <div class="projects-grid">
                 <div class="project-card">
                     <div class="project-image">
-                        <img src="images/project1.jpg" alt="Project 1" loading="lazy">
+                        <img src="images/project1.jpg" alt="ClickVote secure voting platform screenshot" loading="lazy">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://greatwarrior22.pythonanywhere.com/" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://github.com/Ayush22042004/ClickVote" class="project-link" target="_blank"><i class="fab fa-github"></i></a>
+                                <a href="https://greatwarrior22.pythonanywhere.com/" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View ClickVote live demo"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="https://github.com/Ayush22042004/ClickVote" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View ClickVote on GitHub"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
                     </div>
@@ -339,11 +351,11 @@
                 </div>
                 <div class="project-card">
                     <div class="project-image">
-                        <img src="images/project2.jpg" alt="Project 2" loading="lazy">
+                        <img src="images/project2.jpg" alt="Nextask collaborative task management app screenshot" loading="lazy">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://nextask0.netlify.app/" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://github.com/Ayush22042004/Nextask" class="project-link" target="_blank"><i class="fab fa-github"></i></a>
+                                <a href="https://nextask0.netlify.app/" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View Nextask live demo"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="https://github.com/Ayush22042004/Nextask" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View Nextask on GitHub"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
                     </div>
@@ -359,11 +371,11 @@
                 </div>
                 <div class="project-card">
                     <div class="project-image">
-                        <img src="images/project3.jpg" alt="Project 3" loading="lazy">
+                        <img src="images/project3.jpg" alt="Skypulse weather dashboard with location forecast screenshot" loading="lazy">
                         <div class="project-overlay">
                             <div class="project-links">
-                                <a href="https://skypulse2.netlify.app/" class="project-link" target="_blank"><i class="fas fa-external-link-alt"></i></a>
-                                <a href="https://github.com/Ayush22042004/Weather-Dashboard" class="project-link" target="_blank"><i class="fab fa-github"></i></a>
+                                <a href="https://skypulse2.netlify.app/" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View Skypulse live demo"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="https://github.com/Ayush22042004/Weather-Dashboard" class="project-link" target="_blank" rel="noopener noreferrer" aria-label="View Skypulse on GitHub"><i class="fab fa-github"></i></a>
                             </div>
                         </div>
                     </div>
@@ -412,14 +424,16 @@
                         </div>
                     </div>
                     <div class="social-links">
-                        <a href="https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile" class="social-link" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://github.com/Ayush22042004" class="social-link" target="_blank"><i class="fab fa-github"></i></a>
-                        <a href="https://x.com/AyushSingh48642" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://instagram.com/_ayush_singh_2204" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/in/ayush-singh-2204/" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/Ayush22042004" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile"><i class="fab fa-github"></i></a>
+                        <a href="https://x.com/AyushSingh48642" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Twitter/X profile"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/_ayush_singh_2204" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
                 <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
                     <input type="hidden" name="access_key" value="4b545cf9-6789-4685-a975-bc871682c864">
+                    <!-- Honeypot field to block bots - must remain empty -->
+                    <input type="checkbox" name="botcheck" style="display:none;" tabindex="-1" autocomplete="off">
                     <div class="form-group">
                         <input type="text" name="name" placeholder="Your Name" required>
                     </div>
@@ -434,6 +448,7 @@
                     </div>
                     <!-- Redirect after submission -->
                     <input type="hidden" name="redirect" value="https://web3forms.com/success">
+                    <input type="hidden" name="from_name" value="Portfolio Contact Form">
                     <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
             </div>
@@ -460,10 +475,10 @@
                 <div class="footer-section">
                     <h4>FOLLOW MY JOURNEY</h4>
                     <div class="footer-social">
-                        <a href="https://github.com/Ayush22042004" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
-                        <a href="https://www.linkedin.com/in/ayush-singh-2204/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://x.com/AyushSingh48642" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="https://instagram.com/_ayush_singh_2204" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="https://github.com/Ayush22042004" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/ayush-singh-2204/" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://x.com/AyushSingh48642" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/_ayush_singh_2204" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>

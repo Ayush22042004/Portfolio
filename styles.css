@@ -528,12 +528,17 @@ body::after {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(10, 10, 10, 0.85);
-    backdrop-filter: blur(20px);
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0.78), rgba(10, 10, 10, 0.68));
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
+    backdrop-filter: blur(10px) saturate(130%);
     border-bottom: 1px solid rgba(211, 47, 47, 0.3);
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: transform 0.35s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     animation: navSlideDown 0.8s ease-out;
+}
+
+.navbar.nav-hidden {
+    transform: translateY(-105%);
 }
 
 @keyframes navSlideDown {
@@ -564,7 +569,9 @@ body::after {
 }
 
 .navbar.scrolled {
-    background: rgba(10, 10, 10, 0.98);
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0.92), rgba(10, 10, 10, 0.88));
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
+    backdrop-filter: blur(12px) saturate(135%);
     box-shadow: 0 4px 30px rgba(211, 47, 47, 0.2);
 }
 
@@ -576,6 +583,7 @@ body::after {
     justify-content: space-between;
     align-items: center;
     height: 80px;
+    gap: 1rem;
 }
 
 .nav-logo a {
@@ -589,13 +597,13 @@ body::after {
     transition: all 0.3s ease;
     letter-spacing: 2px;
     text-transform: uppercase;
-    text-shadow: 0 0 20px rgba(211, 47, 47, 0.5);
+    text-shadow: 0 0 12px rgba(211, 47, 47, 0.42);
     animation: logoGlow 3s ease-in-out infinite;
 }
 
 @keyframes logoGlow {
-    0%, 100% { text-shadow: 0 0 20px rgba(211, 47, 47, 0.5); }
-    50% { text-shadow: 0 0 40px rgba(211, 47, 47, 0.8), 0 0 60px rgba(211, 47, 47, 0.4); }
+    0%, 100% { text-shadow: 0 0 12px rgba(211, 47, 47, 0.42); }
+    50% { text-shadow: 0 0 18px rgba(211, 47, 47, 0.58); }
 }
 
 .nav-logo a:hover {
@@ -619,6 +627,11 @@ body::after {
     box-shadow: 0 0 20px rgba(211, 47, 47, 0.4);
 }
 
+.logo-image {
+    object-fit: cover;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
 @keyframes iconPulse {
     0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(211, 47, 47, 0.4); }
     50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(211, 47, 47, 0.6); }
@@ -631,7 +644,14 @@ body::after {
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 3rem;
+    gap: clamp(1.2rem, 3vw, 2.6rem);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-left: 0.5rem;
 }
 
 .nav-link {
@@ -642,10 +662,16 @@ body::after {
     position: relative;
     font-size: 0.95rem;
     letter-spacing: 0.5px;
+    padding: 0.35rem 0;
 }
 
 .nav-link:hover {
     color: var(--primary-color);
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+    text-shadow: 0 0 12px rgba(211, 47, 47, 0.45);
 }
 
 .nav-link::after {
@@ -661,6 +687,10 @@ body::after {
 }
 
 .nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link.active::after {
     width: 100%;
 }
 
@@ -905,12 +935,44 @@ body.real-world .music-toggle:hover {
     51%, 100% { opacity: 0; }
 }
 
+/* ===== Moved from JS dynamic injection ===== */
+@keyframes trailFade {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+@keyframes portalExpand {
+    0% { width: 0; height: 0; opacity: 1; }
+    50% { width: 300vmax; height: 300vmax; opacity: 0.3; }
+    100% { width: 400vmax; height: 400vmax; opacity: 0; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
+}
+
+@keyframes ripple {
+    to { transform: scale(2); opacity: 0; }
+}
+
 /* Logo Typewriter Animation */
 .logo-typewriter {
     color: var(--primary-color);
     font-weight: 700;
-    text-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--primary-color);
+    text-shadow: 0 0 10px rgba(211, 47, 47, 0.6);
     letter-spacing: 2px;
+    display: inline-block;
+    width: clamp(220px, 34vw, 560px);
+    box-sizing: border-box;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .logo-typewriter::after {
@@ -2222,6 +2284,17 @@ body.real-world .nav-link {
 body.real-world .nav-link:hover,
 body.real-world .nav-link.active {
     color: var(--primary-color);
+    text-shadow: none;
+}
+
+@media (max-width: 1100px) {
+    .nav-menu {
+        gap: 1.15rem;
+    }
+
+    .logo-typewriter {
+        width: clamp(170px, 28vw, 320px);
+    }
 }
 
 body.real-world .hero {
@@ -2380,6 +2453,21 @@ body.real-world ::-webkit-scrollbar-thumb {
     .nav-container {
         padding: 0 15px;
         height: 70px;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .nav-logo {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-actions {
+        margin-left: auto;
+        gap: 0.45rem;
     }
 
     .navbar {
@@ -2388,6 +2476,24 @@ body.real-world ::-webkit-scrollbar-thumb {
 
     .nav-logo a {
         font-size: 1.4rem;
+        gap: 0.45rem;
+        min-width: 0;
+        align-items: center;
+    }
+
+    .logo-typewriter {
+        display: inline-block;
+        width: 160px;
+        font-size: 0.58rem;
+        letter-spacing: 0.3px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        line-height: 1;
+    }
+
+    .logo-typewriter::after {
+        display: none;
     }
 
     .logo-icon {
@@ -2411,6 +2517,7 @@ body.real-world ::-webkit-scrollbar-thumb {
         border-bottom: 2px solid var(--primary-color);
         max-height: calc(100vh - 70px);
         overflow-y: auto;
+        backdrop-filter: blur(12px);
     }
 
     .nav-menu.active {
@@ -2447,6 +2554,9 @@ body.real-world ::-webkit-scrollbar-thumb {
         display: flex;
         width: 40px;
         height: 40px;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
 
     .bar {
@@ -2464,6 +2574,8 @@ body.real-world ::-webkit-scrollbar-thumb {
         width: 40px;
         height: 40px;
         font-size: 1rem;
+        margin-left: 0;
+        flex-shrink: 0;
     }
 
     .nav-toggle.active .bar:nth-child(2) {
@@ -2757,11 +2869,37 @@ body.real-world ::-webkit-scrollbar-thumb {
         height: 60px;
         /* overflow-x removed so fixed nav-menu isn't clipped */
         box-sizing: border-box;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .nav-actions {
+        margin-left: auto;
+        gap: 0.35rem;
     }
 
     .nav-logo a {
         font-size: 1.1rem;
         letter-spacing: 0.5px;
+        gap: 0.4rem;
+        min-width: 0;
+        align-items: center;
+    }
+
+    .logo-typewriter {
+        display: inline-block;
+        width: 128px;
+        font-size: 0.72rem;
+        letter-spacing: 0.2px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        line-height: 1;
+    }
+
+    .logo-typewriter::after {
+        display: none;
     }
 
     .logo-icon {
@@ -3213,7 +3351,7 @@ svg {
 @supports not (backdrop-filter: blur(10px)) {
     .navbar {
         backdrop-filter: none;
-        background: rgba(10, 10, 10, 0.95);
+        background: rgba(10, 10, 10, 0.92);
     }
 }
 

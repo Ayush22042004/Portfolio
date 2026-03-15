@@ -128,15 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 800);
     }
     
-    // Add trail animation styles
-    const trailStyles = document.createElement('style');
-    trailStyles.textContent = `
-        @keyframes trailFade {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(trailStyles);
+    // trailFade keyframe is defined in styles.css
 
     // ============================================
     // THEME SWITCHING SYSTEM
@@ -221,8 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // start playback attempt after load
-    document.addEventListener('DOMContentLoaded', tryPlayMusic);
+    // start playback attempt (DOM is already loaded at this point)
+    tryPlayMusic();
 
     
     function createPortalTransition() {
@@ -245,34 +237,49 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => portal.remove(), 600);
     }
     
-    // Add portal animation
-    const portalStyles = document.createElement('style');
-    portalStyles.textContent = `
-        @keyframes portalExpand {
-            0% { width: 0; height: 0; opacity: 1; }
-            50% { width: 300vmax; height: 300vmax; opacity: 0.3; }
-            100% { width: 400vmax; height: 400vmax; opacity: 0; }
-        }
-    `;
-    document.head.appendChild(portalStyles);
+    // portalExpand keyframe is defined in styles.css
 
     // ============================================
     // MOBILE MENU TOGGLE
     // ============================================
     const mobileMenu = document.getElementById('mobile-menu');
     const navMenu = document.getElementById('nav-menu');
-    
-    mobileMenu.addEventListener('click', function() {
-        mobileMenu.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
+
+    function closeMobileMenu() {
+        if (!mobileMenu || !navMenu) return;
+        mobileMenu.classList.remove('active');
+        navMenu.classList.remove('active');
+        mobileMenu.setAttribute('aria-expanded', 'false');
+    }
+
+    if (mobileMenu && navMenu) {
+        mobileMenu.addEventListener('click', function() {
+            const isExpanded = navMenu.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            mobileMenu.setAttribute('aria-expanded', String(isExpanded));
+        });
+    }
 
     // Close mobile menu when clicking on a link
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function() {
-            mobileMenu.classList.remove('active');
-            navMenu.classList.remove('active');
+            closeMobileMenu();
         });
+    });
+
+    // Close on outside click for better mobile UX
+    document.addEventListener('click', function(e) {
+        if (!mobileMenu || !navMenu) return;
+        if (!navMenu.classList.contains('active')) return;
+        if (navMenu.contains(e.target) || mobileMenu.contains(e.target)) return;
+        closeMobileMenu();
+    });
+
+    // Close on Escape key for accessibility
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeMobileMenu();
+        }
     });
 
     // ============================================
@@ -280,19 +287,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     const navbar = document.getElementById('navbar');
     let lastScrollY = 0;
-    
+
     window.addEventListener('scroll', function() {
-        lastScrollY = window.scrollY;
-        
-        if (!document.body.classList.contains('real-world')) {
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(10, 10, 10, 0.98)';
-                navbar.style.boxShadow = '0 4px 30px rgba(211, 47, 47, 0.3)';
+        const currentScrollY = window.scrollY;
+
+        if (navbar) {
+            navbar.classList.toggle('scrolled', currentScrollY > 80);
+
+            // Hide navbar on downward scroll and reveal on upward scroll.
+            if (currentScrollY > 140 && currentScrollY > lastScrollY) {
+                navbar.classList.add('nav-hidden');
             } else {
-                navbar.style.background = 'rgba(10, 10, 10, 0.85)';
-                navbar.style.boxShadow = 'none';
+                navbar.classList.remove('nav-hidden');
             }
         }
+        lastScrollY = currentScrollY;
         
         // Parallax effect for particles
         const particles = document.querySelector('.floating-particles');
@@ -309,10 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let logoCharIndex = 0;
 
     function typeLogoEffect() {
-        if (!logoTypewriter) {
-            console.error('Logo typewriter element not found!');
-            return;
-        }
+        if (!logoTypewriter) return;
         
         if (logoCharIndex <= welcomeText.length) {
             logoTypewriter.textContent = welcomeText.substring(0, logoCharIndex);
@@ -346,10 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isDeleting = false;
 
     function typeEffect() {
-        if (!typingText) {
-            console.error('Typing text element not found!');
-            return;
-        }
+        if (!typingText) return;
         
         const currentWord = words[wordIndex];
         
@@ -532,8 +535,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         navLinks.forEach(link => {
             link.classList.remove('active');
+            link.removeAttribute('aria-current');
             if (link.getAttribute('href') === `#${current}`) {
                 link.classList.add('active');
+                link.setAttribute('aria-current', 'page');
             }
         });
     });
@@ -598,21 +603,7 @@ document.addEventListener('DOMContentLoaded', function() {
             backdrop-filter: blur(10px);
         `;
         
-        if (!document.querySelector('style[data-notification]')) {
-            const style = document.createElement('style');
-            style.setAttribute('data-notification', 'true');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(400px); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes slideOut {
-                    from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(400px); opacity: 0; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
+        // slideIn/slideOut keyframes are defined in styles.css
         
         document.body.appendChild(notification);
         
@@ -682,16 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 pointer-events: none;
             `;
             
-            if (!document.querySelector('style[data-ripple]')) {
-                const style = document.createElement('style');
-                style.setAttribute('data-ripple', 'true');
-                style.textContent = `
-                    @keyframes ripple {
-                        to { transform: scale(2); opacity: 0; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
+            // ripple keyframe is defined in styles.css
             
             this.style.position = 'relative';
             this.style.overflow = 'hidden';
