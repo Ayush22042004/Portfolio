@@ -4,6 +4,35 @@
 // ============================================
 
 document.addEventListener('DOMContentLoaded', function() {
+    const isTouchPrimaryDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const tapResetDelayMs = 5000;
+    const tapFeedbackTimers = new WeakMap();
+
+    if (isTouchPrimaryDevice) {
+        document.body.classList.add('touch-device');
+    }
+
+    const tapFeedbackSelector = '.skill-item, .project-card, .passion-card, .stat, .contact-item, .btn, .social-link';
+    if (isTouchPrimaryDevice) {
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches && e.touches.length > 1) return;
+            const target = e.target.closest(tapFeedbackSelector);
+            if (!target) return;
+
+            const existingTimer = tapFeedbackTimers.get(target);
+            if (existingTimer) {
+                clearTimeout(existingTimer);
+            }
+
+            target.classList.add('tap-active');
+            const timerId = setTimeout(() => {
+                target.classList.remove('tap-active');
+                tapFeedbackTimers.delete(target);
+            }, tapResetDelayMs);
+            tapFeedbackTimers.set(target, timerId);
+        }, { passive: true });
+    }
+
             // ============================================
             // LOADER SCREEN - STRANGER THINGS STYLE
             // ============================================
@@ -91,8 +120,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     let mouseX = 0, mouseY = 0;
     let cursorTrails = [];
+
+    function shouldDisableCursorTrail() {
+        return window.matchMedia('(max-width: 900px), (pointer: coarse), (hover: none)').matches;
+    }
     
     document.addEventListener('mousemove', function(e) {
+        if (shouldDisableCursorTrail()) return;
         mouseX = e.clientX;
         mouseY = e.clientY;
         
@@ -103,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function createCursorTrail(x, y) {
+        if (shouldDisableCursorTrail()) return;
         if (cursorTrails.length > 8) return; // Limit trails
         
         const trail = document.createElement('div');
@@ -129,6 +164,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // trailFade keyframe is defined in styles.css
+
+    window.addEventListener('resize', function() {
+        if (!shouldDisableCursorTrail()) return;
+        cursorTrails.forEach(trail => trail.remove());
+        cursorTrails = [];
+    });
 
     // ============================================
     // THEME SWITCHING SYSTEM

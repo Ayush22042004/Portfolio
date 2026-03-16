@@ -58,7 +58,6 @@ body {
 
 body.menu-open {
     overflow: hidden;
-    touch-action: none;
 }
 
 /* ===== loader and slideshow styles moved from head inline block ===== */
@@ -1823,12 +1822,26 @@ section::before {
     align-items: center;
     justify-content: center;
     opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
     transition: all 0.4s ease;
     backdrop-filter: blur(5px);
 }
 
 .project-card:hover .project-overlay {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.project-card.tap-active .project-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.project-card.tap-active .project-image img {
+    filter: brightness(0.72);
 }
 
 .project-links {
@@ -2223,6 +2236,26 @@ section::before {
     }
 }
 
+@keyframes menuGlitchIn {
+    0%   { opacity: 0;    transform: translateY(-10px); }
+    10%  { opacity: 0.9;  transform: translateY(-5px) translateX(5px); }
+    20%  { opacity: 0.3;  transform: translateY(-8px) translateX(-4px); }
+    32%  { opacity: 0.95; transform: translateY(-3px) translateX(3px); }
+    44%  { opacity: 0.55; transform: translateY(-1px) translateX(-1px); }
+    57%  { opacity: 1;    transform: translateY(1px)  translateX(0); }
+    70%  { opacity: 0.85; transform: translateY(-0.5px) translateX(0.5px); }
+    82%  { opacity: 1;    transform: translateY(0.5px); }
+    100% { opacity: 1;    transform: translateY(0); }
+}
+
+@keyframes navItemGlitchIn {
+    0%   { opacity: 0;    transform: translateX(-10px); }
+    25%  { opacity: 0.8;  transform: translateX(5px); }
+    50%  { opacity: 0.5;  transform: translateX(-3px); }
+    75%  { opacity: 1;    transform: translateX(1px); }
+    100% { opacity: 1;    transform: translateX(0); }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
@@ -2420,36 +2453,47 @@ body.real-world .nav-link.active {
 
     .nav-menu {
         position: fixed;
-        left: -100vw;
+        left: 12px;
+        right: 12px;
         top: 80px;
         flex-direction: column;
-        width: 100vw;
-        max-height: calc(100vh - 80px);
+        width: auto;
+        max-height: min(420px, calc(100vh - 94px));
         overflow-y: auto;
+        overscroll-behavior: contain;
         padding: 0.75rem 0;
         text-align: center;
-        background: linear-gradient(180deg, rgba(10, 2, 18, 0.98), rgba(8, 1, 14, 0.98));
-        border-bottom: 2px solid var(--primary-color);
-        border-top: 1px solid rgba(211, 47, 47, 0.28);
-        box-shadow: 0 0 30px var(--primary-color);
+        background: linear-gradient(180deg, rgba(10, 2, 18, 0.99), rgba(8, 1, 14, 0.99));
+        border: 1px solid rgba(211, 47, 47, 0.42);
+        border-radius: 14px;
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45), 0 0 24px rgba(211, 47, 47, 0.28);
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
         transform: translateY(-10px);
-        transition: left 0.3s ease-out, opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+        transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.22s;
         z-index: 999;
         backdrop-filter: blur(12px);
     }
 
     .nav-menu.active {
-        left: 0;
         z-index: 1100;
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
         transform: translateY(0);
-        transition: left 0.3s ease-out, opacity 0.25s ease, transform 0.25s ease;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+        animation: menuGlitchIn 0.38s ease forwards;
     }
+
+    .nav-menu.active .nav-item {
+        animation: navItemGlitchIn 0.28s ease both;
+    }
+    .nav-menu.active .nav-item:nth-child(1) { animation-delay: 0.10s; }
+    .nav-menu.active .nav-item:nth-child(2) { animation-delay: 0.16s; }
+    .nav-menu.active .nav-item:nth-child(3) { animation-delay: 0.22s; }
+    .nav-menu.active .nav-item:nth-child(4) { animation-delay: 0.28s; }
+    .nav-menu.active .nav-item:nth-child(5) { animation-delay: 0.34s; }
 
     .nav-item {
         padding: 0;
@@ -2762,35 +2806,37 @@ body.real-world ::-webkit-scrollbar-thumb {
 
     .nav-menu {
         position: fixed;
-        left: -100vw; /* slide completely off-screen */
+        left: 10px;
+        right: 10px;
         top: 70px; /* will be overridden below for very small screens */
         flex-direction: column;
         background: linear-gradient(180deg, rgba(10, 2, 18, 0.99), rgba(8, 1, 14, 0.99));
-        width: 100vw; /* ensure full viewport width */
+        width: auto;
         text-align: center;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
         transform: translateY(-8px);
-        transition: left 0.3s ease-out, opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
-        box-shadow: 0 0 30px var(--primary-color);
+        transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.22s;
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.46), 0 0 22px rgba(211, 47, 47, 0.24);
         padding: 0.6rem 0;
         z-index: 999;
-        border-bottom: 2px solid var(--primary-color);
-        border-top: 1px solid rgba(211, 47, 47, 0.3);
-        max-height: calc(100vh - 70px);
+        border: 1px solid rgba(211, 47, 47, 0.4);
+        border-radius: 12px;
+        max-height: min(400px, calc(100vh - 82px));
         overflow-y: auto;
+        overscroll-behavior: contain;
         backdrop-filter: blur(12px);
     }
 
     .nav-menu.active {
-        left: 0;
         z-index: 1100; /* sit above navbar */
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
         transform: translateY(0);
-        transition: left 0.3s ease-out, opacity 0.25s ease, transform 0.25s ease;
+        transition: opacity 0.22s ease, transform 0.22s ease;
+        animation: menuGlitchIn 0.38s ease forwards;
     }
 
 /* ensure toggle sits above everything so it's clickable */
@@ -2884,6 +2930,7 @@ body.real-world ::-webkit-scrollbar-thumb {
         display: flex;
         justify-content: center;
         padding-inline: 12px;
+        margin-top: 0.9rem;
         margin-bottom: 0.4rem;
     }
 
@@ -3200,9 +3247,12 @@ body.real-world ::-webkit-scrollbar-thumb {
     }
 
     .nav-menu {
+        left: 8px;
+        right: 8px;
         top: 60px;
         padding: 0.4rem 0;
-        max-height: calc(100vh - 60px);
+        max-height: min(360px, calc(100vh - 72px));
+        border-radius: 10px;
     }
 
     .nav-link {
@@ -3234,6 +3284,7 @@ body.real-world ::-webkit-scrollbar-thumb {
         display: flex;
         justify-content: center;
         padding-inline: 10px;
+        margin-top: 0.75rem;
         margin-bottom: 0.35rem;
     }
 
@@ -3625,12 +3676,16 @@ svg {
         margin-inline: auto;
     }
 
+    .hero-image {
+        margin-top: 0.85rem;
+    }
+
     .hero-img-container {
         width: min(330px, calc(100% - 24px)) !important;
         max-width: 330px !important;
         height: auto !important;
         aspect-ratio: 4 / 3;
-        margin: 0.4rem auto 0.9rem;
+        margin: 0.75rem auto 0.9rem;
     }
 
     /* kill heavy visuals for small screens/weak phones */
@@ -3651,10 +3706,154 @@ svg {
         filter: blur(40px);
     }
 
-    /* disable most animations/transitions to save CPU and avoid glitches */
-    * {
+    /* Tone down only high-cost decorative motion on smaller devices. */
+    .logo-icon,
+    .highlight,
+    .btn-primary,
+    .theme-toggle,
+    .music-toggle,
+    .typing-text::after {
         animation: none !important;
-        transition: none !important;
+    }
+
+    /* Keep navigation transitions alive for menu usability */
+    .nav-menu,
+    .nav-menu.active {
+        transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.22s !important;
+    }
+
+    .nav-toggle .bar {
+        transition: transform 0.22s ease, opacity 0.22s ease !important;
+    }
+
+    /* Keep mobile tiles straight (no rotate/skew), but allow clean vertical rise. */
+    .passion-card,
+    .skill-category,
+    .skill-item,
+    .project-card,
+    .stat,
+    .contact-item,
+    .project-image img,
+    .passion-icon,
+    .skill-item i,
+    .contact-item i,
+    .btn,
+    .social-link {
+        transform: none !important;
+    }
+
+    .passion-card:hover,
+    .skill-category:hover,
+    .skill-item:hover,
+    .project-card:hover,
+    .stat:hover,
+    .contact-item:hover,
+    .project-card:hover .project-image img,
+    .skill-item:hover i,
+    .passion-card:hover .passion-icon,
+    .contact-item:hover i {
+        transform: none !important;
+    }
+
+    .project-card.tap-active,
+    .skill-item.tap-active,
+    .passion-card.tap-active,
+    .stat.tap-active,
+    .contact-item.tap-active,
+    .btn.tap-active,
+    .social-link.tap-active {
+        transform: translateY(-3px) !important;
+    }
+}
+
+/* Touch devices: prevent sticky :hover lift/scale overlap and use subtle tap feedback. */
+@media (hover: none) and (pointer: coarse) {
+    .passion-card:hover,
+    .skill-category:hover,
+    .skill-item:hover,
+    .project-card:hover,
+    .stat:hover,
+    .contact-item:hover,
+    .social-link:hover,
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        transform: none;
+    }
+
+    .skill-item:hover,
+    .skill-category:hover,
+    .passion-card:hover,
+    .project-card:hover,
+    .stat:hover,
+    .contact-item:hover,
+    .social-link:hover,
+    .btn-primary:hover,
+    .btn-secondary:hover {
+        border-color: rgba(211, 47, 47, 0.12) !important;
+        background: inherit;
+    }
+
+    .skill-item:hover,
+    .project-card:hover,
+    .passion-card:hover,
+    .skill-category:hover,
+    .stat:hover,
+    .contact-item:hover {
+        box-shadow: 0 8px 22px rgba(211, 47, 47, 0.12);
+    }
+
+    .skill-item:hover::after,
+    .project-card:hover::before,
+    .passion-card:hover::before {
+        opacity: 0;
+    }
+
+    .skill-item:hover i,
+    .project-card:hover .project-image img,
+    .passion-card:hover .passion-icon,
+    .contact-item:hover i {
+        transform: none;
+        filter: none;
+    }
+
+    .project-card:hover .project-overlay {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .project-card.tap-active .project-overlay {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .passion-card:hover::before {
+        animation-play-state: paused;
+    }
+
+    .skill-item,
+    .project-card,
+    .passion-card,
+    .skill-category,
+    .stat,
+    .contact-item {
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+        will-change: transform;
+        contain: paint;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .skill-item.tap-active,
+    .project-card.tap-active,
+    .passion-card.tap-active,
+    .btn.tap-active,
+    .social-link.tap-active,
+    .contact-item.tap-active,
+    .stat.tap-active {
+        transform: translateY(-3px);
+        border-color: rgba(211, 47, 47, 0.28) !important;
+        box-shadow: 0 4px 12px rgba(211, 47, 47, 0.16);
     }
 }
 
