@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const isTouchPrimaryDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    const isMobilePerformanceMode = window.matchMedia('(max-width: 900px), (hover: none) and (pointer: coarse)').matches;
     const tapResetDelayMs = 5000;
     const tapFeedbackTimers = new WeakMap();
 
@@ -38,6 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // ============================================
             const loader = document.getElementById('loader-screen');
             if (loader) {
+                    if (isMobilePerformanceMode) {
+                        setTimeout(() => {
+                            loader.style.transition = 'opacity 0.45s ease';
+                            loader.style.opacity = 0;
+                            setTimeout(() => {
+                                loader.style.display = 'none';
+                            }, 500);
+                        }, 700);
+                    } else {
                     // Subtle flicker: reduced frequency and intensity for a calmer loader
                     let flickerInterval = setInterval(() => {
                         // slightly stronger but still subtle opacity variance
@@ -65,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             loader.style.display = 'none';
                         }, 900);
                     }, 1800);
+                    }
             }
         // ============================================
         // ABOUT SLIDESHOW
@@ -340,6 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.getElementById('navbar');
     let lastScrollY = 0;
 
+    const particles = document.querySelector('.floating-particles');
     window.addEventListener('scroll', function() {
         const currentScrollY = window.scrollY;
 
@@ -347,8 +359,12 @@ document.addEventListener('DOMContentLoaded', function() {
             navbar.classList.toggle('scrolled', currentScrollY > 80);
 
             // Hide navbar on downward scroll and reveal on upward scroll.
-            if (currentScrollY > 140 && currentScrollY > lastScrollY) {
-                navbar.classList.add('nav-hidden');
+            if (!isMobilePerformanceMode) {
+                if (currentScrollY > 140 && currentScrollY > lastScrollY) {
+                    navbar.classList.add('nav-hidden');
+                } else {
+                    navbar.classList.remove('nav-hidden');
+                }
             } else {
                 navbar.classList.remove('nav-hidden');
             }
@@ -356,11 +372,10 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScrollY = currentScrollY;
         
         // Parallax effect for particles
-        const particles = document.querySelector('.floating-particles');
-        if (particles) {
+        if (particles && !isMobilePerformanceMode) {
             particles.style.transform = `translateY(${window.scrollY * 0.3}px)`;
         }
-    });
+    }, { passive: true });
 
     // ============================================
     // LOGO TYPEWRITER - WELCOME TO THE UPSIDE DOWN
@@ -392,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start logo typewriter immediately
     if (logoTypewriter) {
-        logoTypeTimer = setTimeout(typeLogoEffect, 100);
+        logoTypeTimer = setTimeout(typeLogoEffect, isMobilePerformanceMode ? 130 : 100);
 
         // Restart animation on resize to keep timing smooth.
         window.addEventListener('resize', () => {
@@ -402,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearTimeout(logoTypeTimer);
                 logoTypeTimer = null;
             }
-            logoTypeTimer = setTimeout(typeLogoEffect, 120);
+            logoTypeTimer = setTimeout(typeLogoEffect, isMobilePerformanceMode ? 150 : 120);
         });
     }
 
@@ -444,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start typing animation immediately
     if (typingText) {
-        setTimeout(typeEffect, 200);
+        setTimeout(typeEffect, isMobilePerformanceMode ? 260 : 200);
     }
 
     // ============================================
@@ -557,27 +572,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // TILT EFFECT ON CARDS
     // ============================================
-    document.querySelectorAll('.passion-card, .skill-category, .project-card').forEach(card => {
-        card.addEventListener('mousemove', function(e) {
-            if (document.body.classList.contains('real-world')) return;
+    if (!isMobilePerformanceMode) {
+        document.querySelectorAll('.passion-card, .skill-category, .project-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                if (document.body.classList.contains('real-world')) return;
+                
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
+            });
             
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
+            card.addEventListener('mouseleave', function() {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+            });
         });
-        
-        card.addEventListener('mouseleave', function() {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
-        });
-    });
+    }
 
     // ============================================
     // ACTIVE NAVIGATION HIGHLIGHTING
@@ -585,27 +602,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('section');
     const navLinks = document.querySelectorAll('.nav-link');
 
-    window.addEventListener('scroll', function() {
-        let current = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
+    if (!isMobilePerformanceMode) {
+        window.addEventListener('scroll', function() {
+            let current = '';
             
-            if (window.scrollY >= (sectionTop - 200)) {
-                current = section.getAttribute('id');
-            }
-        });
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                
+                if (window.scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            link.removeAttribute('aria-current');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-                link.setAttribute('aria-current', 'page');
-            }
-        });
-    });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                link.removeAttribute('aria-current');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                }
+            });
+        }, { passive: true });
+    }
 
     // ============================================
     // CONTACT FORM WITH VALIDATION
@@ -693,25 +711,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // PARALLAX EFFECT FOR PROJECT CARDS
     // ============================================
-    document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mousemove', function(e) {
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+    if (!isMobilePerformanceMode) {
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 12;
+                const rotateY = (centerX - x) / 12;
+                
+                this.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
             
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 12;
-            const rotateY = (centerX - x) / 12;
-            
-            this.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)';
+            });
         });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)';
-        });
-    });
+    }
 
     // ============================================
     // RIPPLE EFFECT ON BUTTONS
@@ -750,6 +770,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // BACK TO TOP BUTTON
     // ============================================
+    if (!isMobilePerformanceMode) {
     const backToTop = document.createElement('button');
     backToTop.innerHTML = '<i class="fas fa-chevron-up"></i>';
     backToTop.className = 'back-to-top';
@@ -782,7 +803,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             backToTop.style.display = 'none';
         }
-    });
+    }, { passive: true });
     
     backToTop.addEventListener('click', function() {
         window.scrollTo({
@@ -802,6 +823,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.style.transform = 'scale(1)';
         this.style.boxShadow = '0 8px 20px rgba(14, 165, 233, 0.4)';
     });
+    }
 
     // ============================================
     // COUNTER ANIMATION
@@ -860,6 +882,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // STRANGER THINGS GLITCH EFFECT
     // ============================================
     function addGlitchEffect() {
+        if (isMobilePerformanceMode) return;
         const titles = document.querySelectorAll('.hero-title, .section-title');
         titles.forEach(title => {
             title.addEventListener('mouseenter', function() {
@@ -876,15 +899,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // ============================================
     // RANDOM NEON FLICKER
     // ============================================
-    setInterval(() => {
-        const randomFactor = Math.random();
-        if (randomFactor > 0.95) {
-            document.body.style.opacity = '0.98';
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 50);
-        }
-    }, 3000);
+    if (!isMobilePerformanceMode) {
+        setInterval(() => {
+            const randomFactor = Math.random();
+            if (randomFactor > 0.95) {
+                document.body.style.opacity = '0.98';
+                setTimeout(() => {
+                    document.body.style.opacity = '1';
+                }, 50);
+            }
+        }, 3000);
+    }
 
     console.log('👾 Welcome to the Upside Down. Portal initialized. 🌀');
 });

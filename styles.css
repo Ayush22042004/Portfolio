@@ -3708,14 +3708,52 @@ svg {
         filter: blur(40px);
     }
 
+    .navbar,
+    .nav-menu,
+    .skill-category,
+    .project-overlay {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    .navbar,
+    .nav-menu,
+    .hero-img-container,
+    .passion-card,
+    .skill-category,
+    .project-card,
+    .stat,
+    .contact-item,
+    .about-slideshow {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18) !important;
+    }
+
     /* Tone down only high-cost decorative motion on smaller devices. */
     .logo-icon,
-    .highlight,
     .btn-primary,
     .theme-toggle,
     .music-toggle,
-    .typing-text::after {
+    .hero-img-container,
+    .hero-img-container::before,
+    .section-header,
+    .section-title,
+    .passions-title,
+    .passions::after,
+    .about::before,
+    .skills::before,
+    .projects::before,
+    .stat h4,
+    .about-image img {
         animation: none !important;
+    }
+
+    .hero::before,
+    .hero::after,
+    .passions::after,
+    .about::before,
+    .skills::before,
+    .projects::before {
+        display: none !important;
     }
 
     /* Keep navigation transitions alive for menu usability */
